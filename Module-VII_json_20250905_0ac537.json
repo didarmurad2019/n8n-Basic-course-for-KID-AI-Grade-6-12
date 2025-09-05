@@ -1,0 +1,41 @@
+{
+  "name": "Workflow Sharing Example",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Start",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// This workflow demonstrates how to export and share workflows\n// You can export this workflow as JSON and share it with friends!\n\nconst workflowData = $('node').first().json();\n\nreturn [{ \n  json: {\n    message: 'This workflow can be exported and shared!',\n    steps: 'This workflow has ' + Object.keys(workflowData.nodes).length + ' nodes',\n    sharingTip: 'Export via the menu in the top right corner → Export Workflow'\n  }\n}];"
+      },
+      "id": "function-node",
+      "name": "Sharing Info",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "set-node",
+      "name": "Display Info",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 300]
+    }
+  ],
+  "connections": {
+    "manual-trigger": {
+      "main": [[["function-node"]]]
+    },
+    "function-node": {
+      "main": [[["set-node"]]]
+    }
+  }
+}

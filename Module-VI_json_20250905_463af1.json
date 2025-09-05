@@ -1,0 +1,50 @@
+{
+  "name": "Story Time Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": ["day"],
+          "hour": [19],
+          "minute": [0]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "7 PM Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://shortstories-api.herokuapp.com/",
+        "responseFormat": "json"
+      },
+      "id": "http-request",
+      "name": "Get Story",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [440, 300]
+    },
+    {
+      "parameters": {
+        "toEmail": "student@example.com",
+        "subject": "📖 Bedtime Story",
+        "message": "={{ $json.storyTitle }}\n\n{{ $json.story }}\n\nSweet dreams! 🌙"
+      },
+      "id": "email-node",
+      "name": "Send Story",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [640, 300]
+    }
+  ],
+  "connections": {
+    "schedule-trigger": {
+      "main": [[["http-request"]]]
+    },
+    "http-request": {
+      "main": [[["email-node"]]]
+    }
+  }
+}

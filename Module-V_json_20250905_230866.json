@@ -1,0 +1,74 @@
+{
+  "name": "Mood Tracker",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Check In",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "prompt-node",
+      "name": "How are you feeling?",
+      "type": "n8n-nodes-base.prompt",
+      "typeVersion": 1,
+      "position": [440, 300],
+      "prompt": "How are you feeling today? 😊😐😔"
+    },
+    {
+      "parameters": {
+        "columns": {
+          "values": [
+            {
+              "column": "Date",
+              "value": "={{ new Date().toLocaleDateString() }}"
+            },
+            {
+              "column": "Mood",
+              "value": "={{ $json.response }}"
+            }
+          ]
+        }
+      },
+      "id": "set-node",
+      "name": "Prepare Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "columns": "={{ $json.columns }}",
+        "rows": "={{ $json.data }}"
+      },
+      "id": "google-sheets",
+      "name": "Save to Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [840, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_CREDENTIAL_ID",
+          "name": "Google Sheets"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "manual-trigger": {
+      "main": [[["prompt-node"]]]
+    },
+    "prompt-node": {
+      "main": [[["set-node"]]]
+    },
+    "set-node": {
+      "main": [[["google-sheets"]]]
+    }
+  }
+}

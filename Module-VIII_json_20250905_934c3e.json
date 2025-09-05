@@ -1,0 +1,80 @@
+{
+  "name": "Safe Automation Practices",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Learn Safety",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "switch-node",
+      "name": "Safety Quiz",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [440, 300],
+      "rules": [
+        {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.body }}",
+                "operation": "contains",
+                "value2": "password"
+              }
+            ]
+          }
+        },
+        {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.body }}",
+                "operation": "contains",
+                "value2": "key"
+              }
+            ]
+          }
+        }
+      ],
+      "defaultOutput": "default"
+    },
+    {
+      "parameters": {
+        "message": "🚫 Never share your passwords or API keys! Keep them safe and private."
+      },
+      "id": "warning-response",
+      "name": "Security Warning",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 200]
+    },
+    {
+      "parameters": {
+        "message": "✅ Good job! You're practicing safe automation habits."
+      },
+      "id": "safe-response",
+      "name": "Safe Practices",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 400]
+    }
+  ],
+  "connections": {
+    "manual-trigger": {
+      "main": [[["switch-node"]]]
+    },
+    "switch-node": {
+      "main": [
+        [["warning-response"]],
+        [["warning-response"]],
+        [["safe-response"]]
+      ]
+    }
+  }
+}

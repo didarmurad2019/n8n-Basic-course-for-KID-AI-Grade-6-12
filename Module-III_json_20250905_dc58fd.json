@@ -1,0 +1,36 @@
+{
+  "name": "Homework Reminder",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": ["day"],
+          "hour": [20],
+          "minute": [0]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "8 PM Daily",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "toEmail": "student@example.com",
+        "subject": "📚 Homework Reminder",
+        "message": "Don't forget to complete your homework! 🎒"
+      },
+      "id": "email-node",
+      "name": "Send Reminder",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [440, 300]
+    }
+  ],
+  "connections": {
+    "schedule-trigger": {
+      "main": [[["email-node"]]]
+    }
+  }
+}

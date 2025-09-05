@@ -1,0 +1,136 @@
+{
+  "name": "Homework Helper Bot",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "manual-trigger",
+      "name": "Ask for Help",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "switch-node",
+      "name": "Subject Selector",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 1,
+      "position": [440, 300],
+      "rules": [
+        {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.body }}",
+                "operation": "contains",
+                "value2": "math"
+              }
+            ]
+          }
+        },
+        {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.body }}",
+                "operation": "contains",
+                "value2": "science"
+              }
+            ]
+          }
+        },
+        {
+          "conditions": {
+            "string": [
+              {
+                "value1": "={{ $json.body }}",
+                "operation": "contains",
+                "value2": "history"
+              }
+            ]
+          }
+        }
+      ],
+      "defaultOutput": "default"
+    },
+    {
+      "parameters": {
+        "message": "Math help: Remember PEMDAS! (Parentheses, Exponents, Multiplication, Division, Addition, Subtraction) 🧮"
+      },
+      "id": "math-help",
+      "name": "Math Tips",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 200]
+    },
+    {
+      "parameters": {
+        "message": "Science help: The scientific method is Observe, Question, Hypothesize, Experiment, Analyze, Conclude! 🔬"
+      },
+      "id": "science-help",
+      "name": "Science Tips",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 300]
+    },
+    {
+      "parameters": {
+        "message": "History help: Remember dates by creating stories around them! 📜"
+      },
+      "id": "history-help",
+      "name": "History Tips",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 400]
+    },
+    {
+      "parameters": {
+        "message": "I can help with math, science, or history! Just ask about one of these subjects. 📚"
+      },
+      "id": "default-help",
+      "name": "Default Response",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [640, 500]
+    },
+    {
+      "parameters": {
+        "toEmail": "student@example.com",
+        "subject": "📚 Homework Help",
+        "message": "={{ $json.message }}"
+      },
+      "id": "email-node",
+      "name": "Send Help",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 1,
+      "position": [840, 300]
+    }
+  ],
+  "connections": {
+    "manual-trigger": {
+      "main": [[["switch-node"]]]
+    },
+    "switch-node": {
+      "main": [
+        [["math-help"]],
+        [["science-help"]],
+        [["history-help"]],
+        [["default-help"]]
+      ]
+    },
+    "math-help": {
+      "main": [[["email-node"]]]
+    },
+    "science-help": {
+      "main": [[["email-node"]]]
+    },
+    "history-help": {
+      "main": [[["email-node"]]]
+    },
+    "default-help": {
+      "main": [[["email-node"]]]
+    }
+  }
+}
